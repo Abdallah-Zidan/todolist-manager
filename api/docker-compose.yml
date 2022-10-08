@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  node-app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/
+      - MONGO_DATABASE=crud-task
+      - NODE_ENV=development
+      - REDIS_HOST=redis
+
+    depends_on:
+      - mongo
+      - redis
+
+  mongo:
+    image: mongo:6.0.2-focal
+    restart: always
+
+  redis:
+    image: redis:alpine3.16
+    restart: always
+
