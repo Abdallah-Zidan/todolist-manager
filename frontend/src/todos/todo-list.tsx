@@ -35,11 +35,11 @@ function TodoList({ updateTodo, deleteTodo, toggleComplete }: TodoListProps) {
         borderWidth='2px'
         p='5'
         borderRadius='lg'
-        w='70%'
+        w='60%'
         alignItems='stretch'
       >
         {data.map((todo) => (
-          <HStack key={todo._id} opacity={todo.completed ? '0.2' : '1'}>
+          <HStack key={todo._id} opacity={todo.completed ? '0.5' : '1'}>
             <Text
               w='100%'
               p='8px'

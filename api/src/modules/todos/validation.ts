@@ -7,7 +7,7 @@ const titleSchema = z.string()
 
 const descriptionSchema = z.string()
   .trim()
-  .max(400, 'description can\'t exceed 400 characters')
+  .max(1000, 'description can\'t exceed 1000 characters')
   .min(2, 'description must be at least 2 characters long');
 
 

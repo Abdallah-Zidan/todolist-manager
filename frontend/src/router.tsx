@@ -6,9 +6,11 @@ import Navbar from './navigation/navbar';
 import { AuthContextProvider } from './auth/context';
 import RequireUser from './auth/require-user';
 import Register from './auth/components/register';
+import Notfound from './shared/notfound';
 
 export const router = createBrowserRouter([{
   path: '/',
+  errorElement:(<Notfound/>),
   element: (
     <AuthContextProvider>
       <Navbar />

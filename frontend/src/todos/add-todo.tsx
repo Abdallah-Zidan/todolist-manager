@@ -60,7 +60,7 @@ function AddTodo({ addTodo }: AddTodoProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{width:'70%'}}>
+    <form onSubmit={handleSubmit} style={{width:'60%'}}>
       <HStack mt='4' mb='4' style={{width:'100%'}}>
         <VStack style={{width:'100%', margin:'auto'}}>
           <Input
@@ -70,6 +70,7 @@ function AddTodo({ addTodo }: AddTodoProps) {
             placeholder='title'
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            fontSize="1.2rem"
           />
           <Textarea
             h='120'
@@ -79,6 +80,7 @@ function AddTodo({ addTodo }: AddTodoProps) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             resize="none"
+            fontSize="1.2rem"
           />
         </VStack>
 
