@@ -7,10 +7,10 @@ import {
   Link,
   useColorModeValue,
   useBreakpointValue,
- useColorMode, useToast,
+  useColorMode, useToast,
 } from '@chakra-ui/react';
 
-import { FaMoon, FaSun } from 'react-icons/fa';
+import { FaMoon, FaSun, FaTasks } from 'react-icons/fa';
 import { Link as RouterLink, Outlet } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { logout } from '../auth/api/api';
@@ -54,6 +54,7 @@ export default function Navbar() {
     <>
       <Box>
         <Flex
+          style={{margin:'auto', width:'92%'}}
           bg={useColorModeValue('white', 'gray.800')}
           color={useColorModeValue('gray.600', 'white')}
           minH={'60px'}
@@ -62,22 +63,42 @@ export default function Navbar() {
           borderBottom={1}
           borderStyle={'solid'}
           borderColor={useColorModeValue('gray.200', 'gray.900')}
-          align={'center'}>
-          <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
+          align={'center'}
+          alignItems={{base:'center'}}
+        >
+
+          <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }} alignItems={{ base: 'center' }}>
 
             <RouterLink to={'/'}>
-              <Text
-                textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-                fontFamily={'heading'}
-                color={useColorModeValue('gray.800', 'white')}
-                cursor='pointer'
-              >
-                {import.meta.env.VITE_APP_TITLE || 'TodoList'}
-              </Text>
+              <Flex alignItems={{base:'center'}}>
+                <FaTasks style={{marginRight:'8px'}}/>
+                <Text
+                  textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
+                  fontFamily={'heading'}
+                  color={useColorModeValue('gray.800', 'white')}
+                  cursor='pointer'
+                >
+                  {import.meta.env.VITE_APP_TITLE || 'TodoList'}
+                </Text>
+              </Flex>
             </RouterLink>
 
-            <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
+            <Flex ml={5} alignItems={{base:'center'}}>
               <Stack direction={'row'} spacing={4}>
+                <RouterLink to={'/todos'}>
+                  <Link
+                    as='p'
+                    p={2}
+                    fontSize={'sm'}
+                    fontWeight={500}
+                    color={linkColor}
+                    _hover={{
+                      textDecoration: 'none',
+                      color: linkHoverColor,
+                    }}>
+                    Todos
+                  </Link>
+                </RouterLink>
                 {!user &&
                   <><RouterLink to={'/login'}>
                     <Link

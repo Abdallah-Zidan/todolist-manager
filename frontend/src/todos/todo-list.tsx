@@ -14,11 +14,11 @@ import { TodoListProps } from './types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTodos } from './api';
 
-function TodoList({  updateTodo, deleteTodo , markCompleted }: TodoListProps) {
+function TodoList({ updateTodo, deleteTodo, toggleComplete }: TodoListProps) {
   const queryClient = useQueryClient();
   const { data, error, isLoading } = useQuery(['todos'], getTodos);
-  if (isLoading) return <p>Loading...</p> ;
-  if (error) return <p style={{color:"red"}}>{'An error happened: ' + (error as Error).message}</p> ;
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p style={{ color: 'red' }}>{'An error happened: ' + (error as Error).message}</p>;
 
   if (!data || !data.length) {
     return (
@@ -35,8 +35,7 @@ function TodoList({  updateTodo, deleteTodo , markCompleted }: TodoListProps) {
         borderWidth='2px'
         p='5'
         borderRadius='lg'
-        w='100%'
-        maxW={{ base: '90vw', sm: '80vw', lg: '50vw', xl: '30vw' }}
+        w='70%'
         alignItems='stretch'
       >
         {data.map((todo) => (
@@ -47,7 +46,7 @@ function TodoList({  updateTodo, deleteTodo , markCompleted }: TodoListProps) {
               borderRadius='lg'
               as={todo.completed ? 's' : 'p'}
               cursor='pointer'
-              onClick={()=>markCompleted(todo._id ?? '')}
+              onClick={() => toggleComplete(todo._id ?? '', !todo.completed)}
             >
               {todo.title}
             </Text>

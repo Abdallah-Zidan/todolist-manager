@@ -22,5 +22,5 @@ export interface AddTodoProps {
 export interface TodoListProps {
   updateTodo: (id: string, updatedTodo: Todo, onClose: () => void) => Promise<void> | void;
   deleteTodo: (id: string, onClose: () => void) => Promise<void> | void;
-  markCompleted: (id: string) => Promise<void> | void;
+  toggleComplete: (id: string, complete: boolean) => Promise<void> | void;
 }

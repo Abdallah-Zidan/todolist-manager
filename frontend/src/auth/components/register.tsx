@@ -80,7 +80,7 @@ const Register = () => {
 
   return (
     <form onSubmit={handleRegister}>
-      <Flex h='100vh' alignItems='center' justifyContent='center'>
+      <Flex h='90vh' alignItems='center' justifyContent='center'>
         <Flex
           flexDirection='column'
           bg={formBackground}

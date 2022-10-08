@@ -7,7 +7,7 @@ import {
   FormControl,
   FormLabel,
   useColorModeValue,
-  Text, InputGroup, InputLeftElement, chakra, InputRightElement, FormHelperText,
+  Text, InputGroup, InputLeftElement, chakra, InputRightElement,
 } from '@chakra-ui/react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaLock, FaUserAlt } from 'react-icons/fa';
@@ -35,8 +35,8 @@ const Login = () => {
 
   const authContext = useAuthContext();
 
-  const [password, setPassword] = useState('demoPassword');
-  const [email, setEmail] = useState('user@user.com');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
 
   const { mutate: loginUser, isLoading } = useMutation(
@@ -81,7 +81,7 @@ const Login = () => {
 
   return (
     <form onSubmit={handleLogin}>
-      <Flex h='100vh' alignItems='center' justifyContent='center'>
+      <Flex height='90vh' alignItems='center' justifyContent='center'>
         <Flex
           flexDirection='column'
           bg={formBackground}

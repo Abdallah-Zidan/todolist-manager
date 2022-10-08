@@ -1,6 +1,5 @@
 import { Todo } from './types';
 import axios from '../shared/axios';
-import { raw } from 'concurrently/dist/src/defaults';
 
 
 export async function getTodos(): Promise<Todo[]> {
@@ -23,7 +22,7 @@ export async function deleteTodo(id: string) {
   return response.data;
 }
 
-export async function completeTodo(id: string) {
-  const response = await axios.put(`/todos/${id}`);
+export async function toggleComplete({id,completed}:{id:string,completed:boolean}) {
+  const response = await axios.put(`/todos/${id}/${completed ? 'complete' : 'incomplete'}`);
   return response.data;
 }

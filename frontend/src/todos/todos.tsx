@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import AddTodo from './add-todo';
 import TodoList from './todo-list';
 import { Todo } from './types';
-import { completeTodo, deleteTodo, postTodo, updateTodo } from './api';
+import { toggleComplete, deleteTodo, postTodo, updateTodo } from './api';
 
 export default function Todos() {
   const toast = useToast();
@@ -28,7 +28,7 @@ export default function Todos() {
     },
   });
 
-  const completeMutation = useMutation(completeTodo, {
+  const completeMutation = useMutation(toggleComplete, {
     onSuccess: () => {
       queryClient.invalidateQueries(['todos']).catch(console.error);
     },
@@ -64,28 +64,28 @@ export default function Todos() {
     createMutation.mutate(todo);
   }
 
-  function markAsCompleted(id: string) {
-    completeMutation.mutate(id);
+  function toggleCompletion(id: string, complete: boolean) {
+    completeMutation.mutate({ id, completed: complete });
   }
 
 
   return (
-      <VStack p={4} minH='100vh'  pb={28}>
-        <Heading
-          p='5'
-          fontWeight='extrabold'
-          size='xl'
-          bgGradient='linear(to-r, red.500, yellow.500)'
-          bgClip='text'
-        >
-          Todo list
-        </Heading>
-        <AddTodo addTodo={addTodo} />
-        <TodoList
-          deleteTodo={removeTodo}
-          updateTodo={modifyTodo}
-          markCompleted={markAsCompleted}
-        />
-      </VStack>
+    <VStack p={4} minH='100vh' pb={28}>
+      <Heading
+        p='5'
+        fontWeight='extrabold'
+        size='xl'
+        bgGradient='linear(to-r, red.500, yellow.500)'
+        bgClip='text'
+      >
+        Todo list
+      </Heading>
+      <AddTodo addTodo={addTodo} />
+      <TodoList
+        deleteTodo={removeTodo}
+        updateTodo={modifyTodo}
+        toggleComplete={toggleCompletion}
+      />
+    </VStack>
   );
 }

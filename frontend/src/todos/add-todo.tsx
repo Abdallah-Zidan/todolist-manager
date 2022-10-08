@@ -60,9 +60,9 @@ function AddTodo({ addTodo }: AddTodoProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <HStack mt='4' mb='4'>
-        <VStack>
+    <form onSubmit={handleSubmit} style={{width:'70%'}}>
+      <HStack mt='4' mb='4' style={{width:'100%'}}>
+        <VStack style={{width:'100%', margin:'auto'}}>
           <Input
             h='46'
             borderColor={!statusTitle ? 'red.300' : 'transparent'}

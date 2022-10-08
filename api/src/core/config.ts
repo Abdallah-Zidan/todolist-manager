@@ -1,14 +1,15 @@
 import dotenv from 'dotenv';
+import * as path from 'path';
 
 dotenv.config();
 export default {
-
   app: {
     appName: env('APP_NAME', 'Crud Task'),
     appUrl: env('APP_URL', 'http://localhost:3000'),
     nodeEnv: env('NODE_ENV', 'development'),
     port: Number(env('PORT')) || 3000,
     requestBodyLimit: env('REQUEST_BODY_LIMIT', '50mb'),
+    createDemoUser: ['true', true].includes(env('CREATE_DEMO_USER', 'false').toLowerCase()),
   },
 
   dbs: {

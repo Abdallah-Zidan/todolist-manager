@@ -8,10 +8,7 @@ services:
       - "3000:3000"
     environment:
       - MONGO_URL=mongodb://mongo:27017/
-      - MONGO_DATABASE=crud-task
-      - NODE_ENV=development
       - REDIS_HOST=redis
-      - TOKEN_EXPIRY=1d
 
     depends_on:
       - mongo

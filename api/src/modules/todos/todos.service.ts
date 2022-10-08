@@ -9,11 +9,11 @@ export class TodosService {
     return TodoModel.create({ ...createDto, userId });
   }
 
-  async getTodos(userId: string, { page, limit,sort }: PaginationQuery) {
+  async getTodos(userId: string, { page, limit, sort }: PaginationQuery) {
     const totalPromise = TodoModel.countDocuments({ userId });
     const todosPromise = TodoModel.find({
-      userId
-    }).sort({ createdAt: sort})
+      userId,
+    }).sort({ createdAt: sort })
       .skip((page - 1) * limit)
       .limit(limit);
 
@@ -70,7 +70,7 @@ export class TodosService {
     };
   }
 
-  async completeTodo(id: string, userId: string) {
-    return this.updateTodo(id, userId, { completed: true });
+  async toggleComplete(id: string, userId: string, completed: boolean = true) {
+    return this.updateTodo(id, userId, { completed });
   }
 }

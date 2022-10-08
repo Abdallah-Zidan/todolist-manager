@@ -44,8 +44,14 @@ export class TodosController implements interfaces.Controller {
 
   @httpPut('/:id/complete', validate(todoParams, 'params'))
   private async completeTodo(@request() req: Request) {
-    return this.todosService.completeTodo(req.params.id, reqUserId(req));
+    return this.todosService.toggleComplete(req.params.id, reqUserId(req));
   }
+
+  @httpPut('/:id/incomplete', validate(todoParams, 'params'))
+  private async incomplete(@request() req: Request) {
+    return this.todosService.toggleComplete(req.params.id, reqUserId(req),false);
+  }
+
 
   @httpGet('/', validate(paginationQuery, 'query'))
   private async getTodos(@request() req: Request, @queryParam() query: PaginationQuery) {

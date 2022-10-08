@@ -25,7 +25,6 @@ registerPassportStrategies(passport);
 @controller('/auth')
 export class AuthController implements interfaces.Controller {
   private logger = getLocalLogger(AuthController.name);
-
   constructor(
     @inject(AuthService) private authService: AuthService,
   ) {

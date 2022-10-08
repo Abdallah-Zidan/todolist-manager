@@ -1,11 +1,20 @@
 # build environment
 FROM node:16-alpine as build
+
+RUN  apk add git && npm config set cache /tmp --global
+
 WORKDIR /app
+
 ENV PATH /app/node_modules/.bin:$PATH
+
 COPY package.json ./
+
 COPY package-lock.json ./
-RUN npm ci --silent
+
+RUN npm i
+
 COPY . ./
+
 RUN npm run build
 
 # production environment

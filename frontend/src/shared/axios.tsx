@@ -33,7 +33,8 @@ axiosInstance.interceptors.response.use(
         originalRequest._retry = true;
         const { refreshToken, accessToken } = await refreshAccessToken();
         storage.setToken(accessToken);
-        storage.setToken(refreshToken);
+        storage.setRefreshToken(refreshToken);
+        storage.setLoggedIn(true);
         originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
         return axiosInstance(originalRequest);
       }

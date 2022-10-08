@@ -10,7 +10,7 @@ import {
   Input,
   FormControl,
   useDisclosure,
-  IconButton,
+  IconButton, Textarea,
 } from '@chakra-ui/react';
 import { RefObject, useState } from 'react';
 import React from 'react';
@@ -35,11 +35,11 @@ function UpdateTodo({ todo, updateTodo }: UpdateTodoProps) {
         onClose={onClose}
       >
         <ModalOverlay />
-        <ModalContent w='90%'>
-          <ModalHeader>Update your task</ModalHeader>
+        <ModalContent w='90%' h="70%">
+          <ModalHeader>Update your todo</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl>
+            <FormControl mb={6}>
               <Input
                 placeholder='Edit todo title'
                 defaultValue={todo.title}
@@ -48,7 +48,9 @@ function UpdateTodo({ todo, updateTodo }: UpdateTodoProps) {
               />
             </FormControl>
             <FormControl>
-              <Input
+              <Textarea
+                resize="none"
+                h="60"
                 placeholder='Edit todo description'
                 defaultValue={todo.description}
                 onChange={(e) => setDescription(e.target.value)}
