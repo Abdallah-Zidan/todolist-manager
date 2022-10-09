@@ -14,6 +14,7 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href='#live-demo'>Live Demo</a></li>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
@@ -33,7 +34,9 @@
 
 A demo todo list application consists of backend built with node.js and front end web portal build with react.js
 
-[Live demo](https://todos.gleeze.com/)
+### Live Demo
+
+You can try the application live at [Todos Manager](https://todos.gleeze.com/)
 
 ### Built With
 

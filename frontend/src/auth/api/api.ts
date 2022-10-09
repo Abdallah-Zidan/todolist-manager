@@ -42,12 +42,17 @@ export async function getProfile(): Promise<User> {
 
 export async function logout() {
   if (storage.getRefreshToken()) {
-    const response = await axiosAuth.delete('/auth/logout', {
-      headers: {
-        Authorization: `Bearer ${storage.getRefreshToken()}`,
-      },
-    });
-    return true;
+    try {
+      const response = await axiosAuth.delete('/auth/logout', {
+        headers: {
+          Authorization: `Bearer ${storage.getRefreshToken()}`,
+        },
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
   return false;
 }

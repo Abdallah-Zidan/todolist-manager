@@ -15,7 +15,7 @@ import { Link as RouterLink, Outlet } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { logout } from '../auth/api/api';
 import { storage } from '../auth/common';
-import { useAuthContext } from '../auth/context';
+import { useAuthContext } from '../auth/auth-context';
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -24,8 +24,7 @@ export default function Navbar() {
 
   const toast = useToast();
 
-  const stateContext = useAuthContext();
-  const user = stateContext.state.authUser;
+  const authContext = useAuthContext();
 
   const { mutate: logoutUser } = useMutation(
     async () => await logout(),
@@ -54,7 +53,7 @@ export default function Navbar() {
     <>
       <Box>
         <Flex
-          style={{margin:'auto', width:'92%'}}
+          style={{ margin: 'auto', width: '92%' }}
           bg={useColorModeValue('white', 'gray.800')}
           color={useColorModeValue('gray.600', 'white')}
           minH={'60px'}
@@ -64,14 +63,14 @@ export default function Navbar() {
           borderStyle={'solid'}
           borderColor={useColorModeValue('gray.200', 'gray.900')}
           align={'center'}
-          alignItems={{base:'center'}}
+          alignItems={{ base: 'center' }}
         >
 
           <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }} alignItems={{ base: 'center' }}>
 
             <RouterLink to={'/'}>
-              <Flex alignItems={{base:'center'}}>
-                <FaTasks style={{marginRight:'8px'}}/>
+              <Flex alignItems={{ base: 'center' }}>
+                <FaTasks style={{ marginRight: '8px' }} />
                 <Text
                   textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
                   fontFamily={'heading'}
@@ -83,7 +82,7 @@ export default function Navbar() {
               </Flex>
             </RouterLink>
 
-            <Flex ml={5} alignItems={{base:'center'}}>
+            <Flex ml={5} alignItems={{ base: 'center' }}>
               <Stack direction={'row'} spacing={4}>
                 <RouterLink to={'/todos'}>
                   <Link
@@ -99,7 +98,7 @@ export default function Navbar() {
                     Todos
                   </Link>
                 </RouterLink>
-                {!user &&
+                {!authContext.loggedIn &&
                   <><RouterLink to={'/login'}>
                     <Link
                       as='p'
@@ -130,7 +129,7 @@ export default function Navbar() {
                     </RouterLink>
                   </>
                 }
-                {user && <Link
+                {authContext.loggedIn && <Link
                   onClick={onLogoutHandler}
                   as='p'
                   p={2}

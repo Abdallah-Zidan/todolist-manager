@@ -6,20 +6,21 @@ const REFRESH_JWT_KEY = 'USER_REFRESH_JWT';
 const LOGGED_IN_KEY = 'LOGGED_IN';
 
 export function throwRedirectIfUser() {
-  if (storage.getRefreshToken()) {
+  if (checkAccessToken() || checkRefreshToken()) {
     throw  redirect('/');
   }
 }
 
-
-export async function checkTokens() {
+export function checkAccessToken() {
   const token = storage.getToken();
-  if (token && !isExpired(token)) {
-    return true;
-  }
+  return !!(token && !isExpired(token));
+}
+
+export function checkRefreshToken() {
   const refreshToken = storage.getRefreshToken();
   return !!(refreshToken && !isExpired(refreshToken));
 }
+
 
 export const storage = {
   getToken() {
@@ -29,23 +30,23 @@ export const storage = {
   getRefreshToken() {
     return localStorage.getItem(REFRESH_JWT_KEY);
   },
+
   setToken(token?: string | null) {
     if (token) {
       return localStorage.setItem(JWT_KEY, token);
     }
   },
+
   setRefreshToken(token?: string | null) {
     if (token) {
       return localStorage.setItem(REFRESH_JWT_KEY, token);
     }
   },
+
   setLoggedIn(value = true) {
     localStorage.setItem(LOGGED_IN_KEY, JSON.stringify(value));
   },
 
-  getLoggedIn() {
-    return ['true', true].includes(localStorage.getItem(LOGGED_IN_KEY) as string);
-  },
 
   clearTokens() {
     localStorage.removeItem(JWT_KEY);

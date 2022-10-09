@@ -11,13 +11,13 @@ import {
 } from '@chakra-ui/react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaLock, FaUserAlt } from 'react-icons/fa';
-import { useAuthContext } from '../context';
 import { useToast } from '@chakra-ui/react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { login } from '../api/api';
 import { LoginRequestData } from '../api/interfaces';
 import { storage } from '../common';
 import axios from 'axios';
+import { useAuthContext } from '../auth-context';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -43,10 +43,9 @@ const Login = () => {
     (userData: LoginRequestData) => login(userData),
     {
       onSuccess: (data) => {
-        authContext.dispatch({ type: 'SET_USER', payload: data || null });
         storage.setToken(data.accessToken);
         storage.setRefreshToken(data.refreshToken);
-        storage.setLoggedIn();
+        authContext.setLoggedIn(true);
         toast({
           title: 'Successful login.',
           description: 'You have successfully logged in',
@@ -68,7 +67,7 @@ const Login = () => {
           duration: 4000,
           isClosable: true,
         });
-        authContext.dispatch({ type: 'SET_USER', payload: null });
+        authContext.setLoggedIn(false);
       },
     },
   );
@@ -89,7 +88,7 @@ const Login = () => {
           borderRadius={8}
           boxShadow='lg'
           style={{
-            minWidth:'450px'
+            minWidth: '450px',
           }}
         >
           <Heading mb={6}>Log In</Heading>

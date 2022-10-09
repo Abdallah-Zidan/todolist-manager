@@ -31,12 +31,18 @@ axiosInstance.interceptors.response.use(
       const originalRequest = error.config as any;
       if (error.response?.status === 401 && !originalRequest._retry && !isRefreshRequest(error.config)) {
         originalRequest._retry = true;
-        const { refreshToken, accessToken } = await refreshAccessToken();
-        storage.setToken(accessToken);
-        storage.setRefreshToken(refreshToken);
-        storage.setLoggedIn(true);
-        originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-        return axiosInstance(originalRequest);
+        try {
+          const { refreshToken, accessToken } = await refreshAccessToken();
+          storage.setToken(accessToken);
+          storage.setRefreshToken(refreshToken);
+          originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+          return axiosInstance(originalRequest);
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response?.status === 401) {
+            return window.location.href = '/login';
+          }
+          return Promise.reject(error);
+        }
       }
     }
     return Promise.reject(error);

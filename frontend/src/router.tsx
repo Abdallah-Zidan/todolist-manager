@@ -3,14 +3,14 @@ import Todos from './todos/todos';
 import Login from './auth/components/login';
 import { throwRedirectIfUser } from './auth/common';
 import Navbar from './navigation/navbar';
-import { AuthContextProvider } from './auth/context';
-import RequireUser from './auth/require-user';
+import { AuthContextProvider } from './auth/auth-context';
+import RequireAuth from './auth/require-auth';
 import Register from './auth/components/register';
 import Notfound from './shared/notfound';
 
 export const router = createBrowserRouter([{
   path: '/',
-  errorElement:(<Notfound/>),
+  errorElement: (<Notfound />),
   element: (
     <AuthContextProvider>
       <Navbar />
@@ -26,9 +26,9 @@ export const router = createBrowserRouter([{
     {
       path: '/todos',
       element: (
-        <RequireUser>
+        <RequireAuth>
           <Todos />
-        </RequireUser>
+        </RequireAuth>
       ),
     },
     {
@@ -39,11 +39,11 @@ export const router = createBrowserRouter([{
       element: (<Login />),
     },
     {
-      path:'/register',
+      path: '/register',
       loader: async () => {
         throwRedirectIfUser();
       },
-      element:(<Register/>)
-    }
+      element: (<Register />),
+    },
   ],
 }]);

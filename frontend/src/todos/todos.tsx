@@ -75,8 +75,7 @@ export default function Todos() {
         p='5'
         fontWeight='extrabold'
         size='xl'
-        bgGradient='linear(to-r, red.500, yellow.500)'
-        bgClip='text'
+        colorScheme="twitter"
       >
         Todo list
       </Heading>
