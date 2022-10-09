@@ -18,6 +18,8 @@ import { LoginRequestData } from '../api/interfaces';
 import { storage } from '../common';
 import axios from 'axios';
 import { useAuthContext } from '../auth-context';
+import { useForm } from 'react-hook-form';
+import Loader from '../../shared/loader';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -35,11 +37,9 @@ const Login = () => {
 
   const authContext = useAuthContext();
 
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
-
-  const { mutate: loginUser, isLoading } = useMutation(
+  const { mutate: loginUser, isLoading, isError } = useMutation(
     (userData: LoginRequestData) => login(userData),
     {
       onSuccess: (data) => {
@@ -59,12 +59,16 @@ const Login = () => {
         let message = 'Your request to login has failed.';
         if (axios.isAxiosError(error)) {
           message = error.response?.statusText || message;
+
+          if (error.response?.status == 422) {
+            message = error.response?.data?.message || message;
+          }
         }
         toast({
           title: 'Login failed.',
           description: message,
           status: 'error',
-          duration: 4000,
+          duration: 2500,
           isClosable: true,
         });
         authContext.setLoggedIn(false);
@@ -72,14 +76,16 @@ const Login = () => {
     },
   );
 
+  if (isLoading) {
+    return <Loader />;
+  }
 
-  async function handleLogin(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    loginUser({ email, password });
+  async function onSubmit(data: any) {
+    loginUser(data);
   }
 
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Flex height='90vh' alignItems='center' justifyContent='center'>
         <Flex
           flexDirection='column'
@@ -102,11 +108,16 @@ const Login = () => {
                 type='email'
                 placeholder='email address'
                 variant='filled'
-                mb={3}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                mb={errors.email ? 1 : 3}
+                defaultValue=''
+                borderColor={errors['email'] ? 'red.300' : 'transparent'}
+                {...register('email', { required: 'Email is required', pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/ })}
               />
             </InputGroup>
+            {errors.email && <div style={{
+              color: 'red',
+              marginBottom: '5px',
+            }}>{errors.email?.type === 'pattern' ? 'Invalid Email' : errors?.email?.message?.toString() || 'invalid input'}</div>}
           </FormControl>
           <FormControl>
             <InputGroup>
@@ -119,9 +130,10 @@ const Login = () => {
                 type={showPassword ? 'text' : 'password'}
                 placeholder='Password'
                 variant='filled'
-                mb={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                mb={errors.password ? 1 : 6}
+                defaultValue=''
+                borderColor={errors['password'] ? 'red.300' : 'transparent'}
+                {...register('password', { required: 'Password is required' })}
               />
               <InputRightElement width='4.5rem'>
                 <Button h='1.75rem' size='sm' onClick={handleShowClick}>
@@ -129,6 +141,11 @@ const Login = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
+            {errors.password &&
+              <p style={{
+                color: 'red',
+                marginBottom: '5px',
+              }}>{errors.password?.message?.toString() || 'invalid input'}</p>}
           </FormControl>
 
           <Button colorScheme='teal' mb={8} type='submit'>
