@@ -68,7 +68,7 @@ export default function Navbar() {
 
           <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }} alignItems={{ base: 'center' }}>
 
-            <RouterLink to={'/'}>
+            <RouterLink to={'/todos'}>
               <Flex alignItems={{ base: 'center' }}>
                 <FaTasks style={{ marginRight: '8px' }} />
                 <Text
@@ -84,20 +84,6 @@ export default function Navbar() {
 
             <Flex ml={5} alignItems={{ base: 'center' }}>
               <Stack direction={'row'} spacing={4}>
-                <RouterLink to={'/todos'}>
-                  <Link
-                    as='p'
-                    p={2}
-                    fontSize={'sm'}
-                    fontWeight={500}
-                    color={linkColor}
-                    _hover={{
-                      textDecoration: 'none',
-                      color: linkHoverColor,
-                    }}>
-                    Todos
-                  </Link>
-                </RouterLink>
                 {!authContext.loggedIn &&
                   <><RouterLink to={'/login'}>
                     <Link
