@@ -35,18 +35,18 @@ function TodoItem({ todo }: { todo: Todo }) {
         onClose={onClose}
       >
         <ModalOverlay />
-        <ModalContent >
+        <ModalContent>
           <ModalHeader fontSize='md'>{todo.title.toUpperCase()}</ModalHeader>
           <ModalCloseButton />
-          <hr/>
+          <hr />
           <ModalBody pb={6}>
             <Text
               fontSize='lg'
               lineHeight={1.75}
               fontFamily="'Cairo', sans-serif"
               letterSpacing='wide'
+              dangerouslySetInnerHTML={{ __html: todo.description?.replace?.(/\n/g, '<br/>') || '' }}
             >
-              {todo.description}
             </Text>
           </ModalBody>
           <ModalFooter>
