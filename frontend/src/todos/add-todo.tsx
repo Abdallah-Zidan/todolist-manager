@@ -28,6 +28,17 @@ function AddTodo({ addTodo }: AddTodoProps) {
       return setTitle('');
     }
 
+    if (title.length < 4) {
+      toast({
+        title: 'title must be at least 4 characters long',
+        position: 'top',
+        status: 'warning',
+        duration: 2000,
+        isClosable: true,
+      });
+      return setStatusTitle(false);
+    }
+
     if (!descriptionText) {
       toast({
         title: 'description is required',
@@ -39,6 +50,17 @@ function AddTodo({ addTodo }: AddTodoProps) {
 
       setStatusDescription(false);
       return setDescription('');
+    }
+
+    if (description.length < 4) {
+      toast({
+        title: 'description must be at least 4 characters long',
+        position: 'top',
+        status: 'warning',
+        duration: 2000,
+        isClosable: true,
+      });
+      return setStatusDescription(false);
     }
 
     const todo = {
@@ -60,9 +82,9 @@ function AddTodo({ addTodo }: AddTodoProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{width:'60%'}}>
-      <HStack mt='4' mb='4' style={{width:'100%'}}>
-        <VStack style={{width:'100%', margin:'auto'}}>
+    <form onSubmit={handleSubmit} style={{ width: '60%' }}>
+      <HStack mt='4' mb='4' style={{ width: '100%' }}>
+        <VStack style={{ width: '100%', margin: 'auto' }}>
           <Input
             h='46'
             borderColor={!statusTitle ? 'red.300' : 'transparent'}
@@ -70,7 +92,7 @@ function AddTodo({ addTodo }: AddTodoProps) {
             placeholder='title'
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            fontSize="1.2rem"
+            fontSize='1.2rem'
           />
           <Textarea
             h='120'
@@ -79,8 +101,8 @@ function AddTodo({ addTodo }: AddTodoProps) {
             placeholder='description'
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            resize="none"
-            fontSize="1.2rem"
+            resize='none'
+            fontSize='1.2rem'
           />
         </VStack>
 
