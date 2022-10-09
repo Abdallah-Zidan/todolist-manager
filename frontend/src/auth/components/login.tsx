@@ -1,4 +1,4 @@
-import React, { EventHandler, FormEvent, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Flex,
   Heading,
@@ -37,9 +37,9 @@ const Login = () => {
 
   const authContext = useAuthContext();
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const { mutate: loginUser, isLoading, isError } = useMutation(
+  const { mutate: loginUser, isLoading} = useMutation(
     (userData: LoginRequestData) => login(userData),
     {
       onSuccess: (data) => {
@@ -111,7 +111,7 @@ const Login = () => {
                 mb={errors.email ? 1 : 3}
                 defaultValue=''
                 borderColor={errors['email'] ? 'red.300' : 'transparent'}
-                {...register('email', { required: 'Email is required', pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/ })}
+                {...register('email', { required: 'Email is required', pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/ })}
               />
             </InputGroup>
             {errors.email && <div style={{

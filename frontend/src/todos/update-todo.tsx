@@ -10,20 +10,55 @@ import {
   Input,
   FormControl,
   useDisclosure,
-  IconButton, Textarea,
+  IconButton, Textarea, Checkbox, useToast,
 } from '@chakra-ui/react';
-import { RefObject, useState } from 'react';
+import { RefObject } from 'react';
 import React from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { UpdateTodoProps } from './types';
+import { useForm } from 'react-hook-form';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateTodo } from './api';
 
-function UpdateTodo({ todo, updateTodo }: UpdateTodoProps) {
+function UpdateTodo({ todo }: UpdateTodoProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [completed, setCompleted] = useState(false);
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   const initialRef: RefObject<any> = React.useRef();
+
+  const updateMutation = useMutation(updateTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todos']).catch(console.error);
+    },
+  });
+
+  async function onClick(data: any) {
+    updateMutation.mutate({ _id: todo._id, ...data }, {
+      onSuccess: () => {
+        toast({
+          title: 'Todo updated.',
+          description: 'Updated your todo',
+          status: 'success',
+          duration: 500,
+          isClosable: true,
+        });
+        onClose();
+      },
+      onError: (error: any) => {
+        let description = error.message || 'error during updating your todo';
+        toast({
+          title: 'Update failed.',
+          description,
+          status: 'error',
+          duration: 700,
+          isClosable: true,
+        });
+      },
+    });
+  }
 
   return (
     <>
@@ -35,7 +70,7 @@ function UpdateTodo({ todo, updateTodo }: UpdateTodoProps) {
         onClose={onClose}
       >
         <ModalOverlay />
-        <ModalContent w='90%' h="70%">
+        <ModalContent w='90%' h='70%'>
           <ModalHeader>Update your todo</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
@@ -43,19 +78,56 @@ function UpdateTodo({ todo, updateTodo }: UpdateTodoProps) {
               <Input
                 placeholder='Edit todo title'
                 defaultValue={todo.title}
-                onChange={(e) => setTitle(e.target.value)}
-                onFocus={(e) => setTitle(e.target.value)}
+                borderColor={errors['title'] ? 'red.300' : 'transparent'}
+                {...register('title', {
+                  required: 'Title is required',
+                  minLength: {
+                    value: 4,
+                    message: 'Title must be at least 4 characters long',
+                  },
+                  maxLength: {
+                    value: 155,
+                    message: 'Title must not exceed 155 characters',
+                  },
+                })}
               />
+
+              {errors.title && <div style={{
+                color: 'red',
+                marginBottom: '5px',
+              }}>{errors?.title?.message?.toString() || 'invalid input'}</div>}
+
             </FormControl>
             <FormControl>
               <Textarea
-                resize="none"
-                h="60"
+                resize='none'
+                h='60'
                 placeholder='Edit todo description'
+                borderColor={errors['description'] ? 'red.300' : 'transparent'}
                 defaultValue={todo.description}
-                onChange={(e) => setDescription(e.target.value)}
-                onFocus={(e) => setDescription(e.target.value)}
+                {...register('description', {
+                  required: 'Description is required',
+                  minLength: {
+                    value: 4,
+                    message: 'Description must be at least 4 characters long',
+                  },
+                  maxLength: {
+                    value: 1000,
+                    message: 'Description must not exceed 155 characters',
+                  },
+                })}
               />
+              {errors.description && <div style={{
+                color: 'red',
+                marginBottom: '5px',
+              }}>{errors?.description?.message?.toString() || 'invalid input'}</div>}
+            </FormControl>
+            <FormControl>
+              <Checkbox colorScheme='twitter' defaultChecked={todo.completed}
+                        {...register('completed')}
+              >
+                Mark as completed
+              </Checkbox>
             </FormControl>
           </ModalBody>
 
@@ -65,11 +137,7 @@ function UpdateTodo({ todo, updateTodo }: UpdateTodoProps) {
             </Button>
             <Button
               colorScheme='blue'
-              onClick={() => updateTodo(todo._id as string, {
-                title: title,
-                description: description,
-                completed: completed,
-              }, onClose)}
+              onClick={handleSubmit(onClick)}
             >
               Save
             </Button>

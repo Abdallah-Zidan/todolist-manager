@@ -8,18 +8,50 @@ import {
   Button,
   Text,
   useDisclosure,
-  IconButton,
+  IconButton, useToast,
 } from '@chakra-ui/react';
 import React from 'react';
 import { FiTrash2 } from 'react-icons/fi';
 import { DeleteTodoProps } from './types';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteTodo } from './api';
 
-export default function DeleteTodo({ todo, deleteTodo }: DeleteTodoProps) {
+export default function DeleteTodo({ todo }: DeleteTodoProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+  const deleteMutation = useMutation(deleteTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todos']).catch(console.error);
+      toast({
+        title: 'Todo removed.',
+        description: 'Removed your todo successfully',
+        status: 'success',
+        duration: 500,
+        isClosable: true,
+      });
+    },
+    onError: (error: any) => {
+      let description = error.message || 'error during removing your todo';
+      toast({
+        title: 'Removing failed.',
+        description,
+        status: 'error',
+        duration: 700,
+        isClosable: true,
+      });
+    },
+
+  });
+
+  async function onClick() {
+    deleteMutation.mutate(todo._id as string);
+    close();
+  }
 
   return (
     <>
-      <IconButton icon={<FiTrash2 />} isRound={true} onClick={onOpen} aria-label="delete todo" />
+      <IconButton icon={<FiTrash2 />} isRound={true} onClick={onOpen} aria-label='delete todo' />
 
       <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -34,7 +66,7 @@ export default function DeleteTodo({ todo, deleteTodo }: DeleteTodoProps) {
             </Button>
             <Button
               colorScheme='red'
-              onClick={() => deleteTodo(todo._id ?? "", onClose)}
+              onClick={onClick}
             >
               Yes
             </Button>

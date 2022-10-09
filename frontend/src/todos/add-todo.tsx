@@ -1,106 +1,80 @@
-import { useState } from 'react';
 import { Button, HStack, Input, Textarea, useToast, VStack } from '@chakra-ui/react';
-import { AddTodoProps } from './types';
+import { useForm } from 'react-hook-form';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { postTodo } from './api';
 
-function AddTodo({ addTodo }: AddTodoProps) {
+function AddTodo() {
   const toast = useToast();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [statusTitle, setStatusTitle] = useState(true);
-  const [statusDescription, setStatusDescription] = useState(true);
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const queryClient = useQueryClient();
 
-  async function handleSubmit(e: any) {
-    e.preventDefault();
-
-    const titleText = title.trim();
-    const descriptionText = description.trim();
-
-    if (!titleText) {
+  const createMutation = useMutation(postTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todos']).catch(console.error);
       toast({
-        title: 'title is required',
-        position: 'top',
-        status: 'warning',
-        duration: 2000,
+        title: 'Todo created.',
+        description: 'Created your todo',
+        status: 'success',
+        duration: 500,
         isClosable: true,
       });
-
-      setStatusTitle(false);
-      return setTitle('');
-    }
-
-    if (title.length < 4) {
+      reset();
+    },
+    onError: (error: any) => {
+      let description = error.message || 'error during creating your todo';
       toast({
-        title: 'title must be at least 4 characters long',
-        position: 'top',
-        status: 'warning',
-        duration: 2000,
+        title: 'Creation failed.',
+        description,
+        status: 'error',
+        duration: 700,
         isClosable: true,
       });
-      return setStatusTitle(false);
-    }
+    },
+  });
 
-    if (!descriptionText) {
-      toast({
-        title: 'description is required',
-        position: 'top',
-        status: 'warning',
-        duration: 2000,
-        isClosable: true,
-      });
 
-      setStatusDescription(false);
-      return setDescription('');
-    }
-
-    if (description.length < 4) {
-      toast({
-        title: 'description must be at least 4 characters long',
-        position: 'top',
-        status: 'warning',
-        duration: 2000,
-        isClosable: true,
-      });
-      return setStatusDescription(false);
-    }
-
-    const todo = {
-      title: titleText,
-      description: descriptionText,
-      completed: false,
-    };
-
-    await addTodo(todo);
-    setTitle('');
-    setDescription('');
-  }
-
-  if (title && !statusTitle) {
-    setStatusTitle(true);
-  }
-  if (description && !statusDescription) {
-    setStatusDescription(true);
+  async function onSubmit(data: any) {
+    createMutation.mutate(data);
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ width: '60%' }}>
+    <form onSubmit={handleSubmit(onSubmit)} style={{ width: '60%' }}>
       <HStack mt='4' mb='4' style={{ width: '100%' }}>
         <VStack style={{ width: '100%', margin: 'auto' }}>
           <Input
             h='46'
-            borderColor={!statusTitle ? 'red.300' : 'transparent'}
             variant='filled'
             placeholder='title'
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            borderColor={errors['title'] ? 'red.300' : 'transparent'}
+            {...register('title', {
+              required: 'Title is required',
+              minLength: {
+                value: 4,
+                message: 'Title must be at least 4 characters long',
+              },
+              maxLength: {
+                value: 155,
+                message: 'Title must not exceed 155 characters',
+              },
+            })}
             fontSize='1.2rem'
           />
           <Textarea
             h='120'
-            borderColor={!statusDescription ? 'red.300' : 'transparent'}
+            borderColor={errors['description'] ? 'red.300' : 'transparent'}
             variant='filled'
             placeholder='description'
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            {...register('description', {
+              required: 'Description is required',
+              minLength: {
+                value: 4,
+                message: 'Description must be at least 4 characters long',
+              },
+              maxLength: {
+                value: 1000,
+                message: 'Description must not exceed 155 characters',
+              },
+            })}
             resize='none'
             fontSize='1.2rem'
           />

@@ -13,8 +13,10 @@ import {
 import { TodoListProps } from './types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTodos } from './api';
+import ToggleTodo from './toggle-todo';
+import TodoItem from './todo-item';
 
-function TodoList({ updateTodo, deleteTodo, toggleComplete }: TodoListProps) {
+function TodoList() {
   const queryClient = useQueryClient();
   const { data, error, isLoading } = useQuery(['todos'], getTodos);
   if (isLoading) return <p>Loading...</p>;
@@ -39,23 +41,7 @@ function TodoList({ updateTodo, deleteTodo, toggleComplete }: TodoListProps) {
         alignItems='stretch'
       >
         {data.map((todo) => (
-          <HStack key={todo._id} opacity={todo.completed ? '0.5' : '1'}>
-            <Text
-              w='100%'
-              p='8px'
-              borderRadius='lg'
-              as={todo.completed ? 's' : 'p'}
-              cursor='pointer'
-              onClick={() => toggleComplete(todo._id ?? '', !todo.completed)}
-            >
-              {todo.title}
-            </Text>
-            <DeleteTodo
-              todo={todo}
-              deleteTodo={deleteTodo}
-            />
-            <UpdateTodo todo={todo} updateTodo={updateTodo} />
-          </HStack>
+          <TodoItem todo={todo} />
         ))}
       </VStack>
     </>
