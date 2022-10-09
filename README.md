@@ -34,9 +34,12 @@
 
 A demo todo list application consists of backend built with node.js and front end web portal build with react.js
 
+[![Capture.png](https://i.postimg.cc/sgxr4695/Capture.png)](https://postimg.cc/XpRmVgPv)
 ### Live Demo
 
 You can try the application live at [Todos Manager](https://todos.gleeze.com/)
+- user@user.com
+- demopassword
 
 ### Built With
 
